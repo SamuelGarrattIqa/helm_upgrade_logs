@@ -35,7 +35,9 @@ jobs:
 #         ruby-version: ${{ matrix.ruby-version }}
 #         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Test
-      run: echo 'Hi'
-    
+      run: bash -f bin/start_kind.sh
+    - name: Check pods
+      run: kubectl get pods
+
 #     - name: Run tests
 #       run: bundle exec rake
