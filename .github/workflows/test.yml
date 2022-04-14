@@ -41,7 +41,7 @@ jobs:
     - name: Add bitnami repo
       run: helm repo add bitnami https://charts.bitnami.com/bitnami
     - name: Helm upgrade with logs
-      run: curl -s https://raw.githubusercontent.com/SamuelGarrattIqa/helm_upgrade_logs/main/exe/helm_upgrade_logs | bash -s -- --install nginx bitnami/nginx
+      run: curl -s https://raw.githubusercontent.com/SamuelGarrattIqa/helm_upgrade_logs/main/exe/helm_upgrade_logs | bash -s -- --install nginx bitnami/nginx --wait
 
 #     - name: Run tests
 #       run: bundle exec rake

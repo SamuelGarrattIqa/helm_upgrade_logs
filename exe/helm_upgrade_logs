@@ -226,4 +226,5 @@ watch_pods "${release}" &
 watch_pods_logs_and_events "${release}" &
 
 wait "${pid}"
+kill $(jobs -p)
 rm -rf helm_upgrade_log_tmp
