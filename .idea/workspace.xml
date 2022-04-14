@@ -2,24 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da917fa3-f5ef-4365-9d07-5ed3fa5f86fb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitlab-ci.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.rspec" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.rubocop.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CODE_OF_CONDUCT.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Gemfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LICENSE.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rakefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/console" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/setup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/exe/helm_upgrade_logs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/helm_upgrade_logs.gemspec" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/helm_upgrade_logs.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/helm_upgrade_logs/version.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/spec/helm_upgrade_logs_spec.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/spec/spec_helper.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/helm_upgrade_logs.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/helm_upgrade_logs.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helm_upgrade_logs.gemspec" beforeDir="false" afterPath="$PROJECT_DIR$/helm_upgrade_logs.gemspec" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spec/helm_upgrade_logs_spec.rb" beforeDir="false" afterPath="$PROJECT_DIR$/spec/helm_upgrade_logs_spec.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +50,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1649928928769</updated>
-      <workItem from="1649928930827" duration="225000" />
+      <workItem from="1649928930827" duration="666000" />
     </task>
     <servers />
   </component>
