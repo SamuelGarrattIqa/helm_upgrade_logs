@@ -36,6 +36,8 @@ jobs:
 #         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Test
       run: bash -f bin/start_kind.sh
+    - name: Waiting for KIND cluster to get ready
+      run: sleep 70
     - name: Check pods
       run: kubectl get pods --all-namespaces
     - name: Check Events
@@ -45,9 +47,9 @@ jobs:
     - name: helm upgrade install
       run: helm upgrade --install nginx bitnami/nginx
     - name: Check pods
-      run: sleep 5 && kubectl get pods --all-namespaces
+      run: sleep 8 && kubectl get pods --all-namespaces
     - name: Check Events
-      run: sleep 4 && kubectl get events --all-namespaces
+      run: sleep 7 && kubectl get events --all-namespaces
 #    - name: Run from local
 #      run: bash exe/helm_upgrade_logs
 #    - name: Helm upgrade with logs
