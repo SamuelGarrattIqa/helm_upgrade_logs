@@ -8,7 +8,12 @@ helm_pid = Process.spawn "helm upgrade #{ARGV.join(' ')}"
 
 
 sleep 5
-lid = Process.spawn 'kubectl logs -lapp.kubernetes.io/managed-by=Helm -f --all-containers --prefix'
+log_pid = Process.spawn 'kubectl logs -lapp.kubernetes.io/managed-by=Helm -f --all-containers --prefix'
+event_pid = Process.spawn 'kubectl get events -lapp.kubernetes.io/managed-by=Helm --watch=true'
+
+Process.wait helm_pid
+puts `kill #{log_pid}`
+puts `kill #{event_pid}`
 
 #3.times {
 #  sleep 5
