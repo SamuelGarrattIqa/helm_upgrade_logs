@@ -56,8 +56,8 @@ done
 # Assign Deafults
 CLUSTER_NAME=${CLUSTER_NAME:-"testcluster"} # NOT USING THIS. Does not provide benefit for 1 cluster on kind
 KIND_VERSION=${KIND_VERSION:-v0.10.0}
-KUBECTL_VERSION=${KUBECTL_VERSION:-v1.19.0}
-HELM_VERSION=${HELM_VERSION:-v3.5.3}
+KUBECTL_VERSION=${KUBECTL_VERSION:-v1.20.4}
+HELM_VERSION=${HELM_VERSION:-v3.8.0}
 
 echo $(date -u) "[INFO] Downloading Kubectl ..."
 curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl

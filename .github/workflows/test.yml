@@ -37,11 +37,17 @@ jobs:
     - name: Test
       run: bash -f bin/start_kind.sh
     - name: Check pods
-      run: kubectl get pods
+      run: kubectl get pods --all-namespaces
+    - name: Check Events
+      run: kubectl get events --all-namespaces
     - name: Add bitnami repo
       run: helm repo add bitnami https://charts.bitnami.com/bitnami
     - name: helm upgrade install
       run: helm upgrade --install nginx bitnami/nginx --wait
+    - name: Check Events
+      run: kubectl get events --all-namespaces
+#    - name: Run from local
+#      run: bash exe/helm_upgrade_logs
 #    - name: Helm upgrade with logs
 #      run: curl -s https://raw.githubusercontent.com/SamuelGarrattIqa/helm_upgrade_logs/main/exe/helm_upgrade_logs | bash -s -- --install nginx bitnami/nginx --wait
 
