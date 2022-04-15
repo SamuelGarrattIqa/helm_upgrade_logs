@@ -48,7 +48,7 @@ jobs:
       run: helm upgrade --install nginx bitnami/nginx --wait
       continue-on-error: true
     - name: Check logs
-      run: kubectl get logs -lapp.kubernetes.io/managed-by=Helm
+      run: kubectl logs -lapp.kubernetes.io/managed-by=Helm
     - name: Check pods
       run: sleep 15 && kubectl get pods --all-namespaces
     - name: Check Events
