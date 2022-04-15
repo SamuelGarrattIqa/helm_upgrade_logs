@@ -17,8 +17,21 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  demo_install_run_gem:
+    runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          ruby-version: ['3.0']
+      steps:
+        - uses: actions/checkout@v3
+        - name: Start KIND cluster
+          run: bash -f bin/start_kind.sh
+        - name: Install gem
+          run: gem install helm_upgrade_logs
+        - name: Helm install debugging logs
+          run: helm_upgrade_logs --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP
 
+  test_exe:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -34,25 +47,3 @@ jobs:
       run: helm repo add bitnami https://charts.bitnami.com/bitnami
     - name: Install through gem exe
       run: ./exe/helm_upgrade_logs --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP --set replicaCount=2
-#    - name: Check pods
-#      run: kubectl get pods --all-namespaces
-#    - name: Check Events
-#      run: kubectl get events --all-namespaces
-#
-#    - name: Check logs
-#      run: kubectl logs -lapp.kubernetes.io/managed-by=Helm -f
-#    - name: helm upgrade install
-#      run: helm upgrade --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP
-#      continue-on-error: true
-#    - name: Check pods
-#      run: sleep 15 && kubectl get pods --all-namespaces
-#    - name: Check Events
-#      run: sleep 7 && kubectl get events --all-namespaces
-#    - name: Run from local
-#      run: bash bin/helm_upgrade_logs.sh --install nginx2 bitnami/nginx --wait --debug --set service.type=ClusterIP
-
-#    - name: Helm upgrade with logs
-#      run: curl -s https://raw.githubusercontent.com/SamuelGarrattIqa/helm_upgrade_logs/main/exe/helm_upgrade_logs | bash -s -- --install nginx2 bitnami/nginx --wait
-
-#     - name: Run tests
-#       run: bundle exec rake
