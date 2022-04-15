@@ -33,7 +33,7 @@ jobs:
     - name: Add bitnami repo
       run: helm repo add bitnami https://charts.bitnami.com/bitnami
     - name: Install through gem exe
-      run: ./exe/helm_upgrade_logs --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP --replicaCount=2
+      run: ./exe/helm_upgrade_logs --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP --set replicaCount=2
 #    - name: Check pods
 #      run: kubectl get pods --all-namespaces
 #    - name: Check Events
