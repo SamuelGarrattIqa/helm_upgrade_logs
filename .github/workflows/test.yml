@@ -44,17 +44,19 @@ jobs:
       run: kubectl get events --all-namespaces
     - name: Add bitnami repo
       run: helm repo add bitnami https://charts.bitnami.com/bitnami
-    - name: helm upgrade install
-      run: helm upgrade --install nginx bitnami/nginx --wait
-      continue-on-error: true
     - name: Check logs
-      run: kubectl logs -lapp.kubernetes.io/managed-by=Helm
+      run: nohup kubectl logs -lapp.kubernetes.io/managed-by=Helm -f &
+    - name: helm upgrade install
+      run: helm upgrade --install nginx bitnami/nginx --wait --debug
+      continue-on-error: true
+    - name: kill background logs process
+      run: kill -SIGHUP
     - name: Check pods
       run: sleep 15 && kubectl get pods --all-namespaces
     - name: Check Events
       run: sleep 7 && kubectl get events --all-namespaces
     - name: Run from local
-      run: bash exe/helm_upgrade_logs --install nginx2 bitnami/nginx --wait
+      run: bash exe/helm_upgrade_logs --install nginx2 bitnami/nginx --wait --debug
 #    - name: Helm upgrade with logs
 #      run: curl -s https://raw.githubusercontent.com/SamuelGarrattIqa/helm_upgrade_logs/main/exe/helm_upgrade_logs | bash -s -- --install nginx2 bitnami/nginx --wait
 
