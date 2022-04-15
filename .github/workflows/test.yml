@@ -43,9 +43,11 @@ jobs:
     - name: Add bitnami repo
       run: helm repo add bitnami https://charts.bitnami.com/bitnami
     - name: helm upgrade install
-      run: helm upgrade --install nginx bitnami/nginx --wait
+      run: helm upgrade --install nginx bitnami/nginx
+    - name: Check pods
+      run: sleep 5 && kubectl get pods --all-namespaces
     - name: Check Events
-      run: kubectl get events --all-namespaces
+      run: sleep 4 && kubectl get events --all-namespaces
 #    - name: Run from local
 #      run: bash exe/helm_upgrade_logs
 #    - name: Helm upgrade with logs
