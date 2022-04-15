@@ -24,6 +24,10 @@ jobs:
         ruby-version: ['3.0']
     steps:
       - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
       - name: Start KIND cluster
         run: bash -f bin/start_kind.sh
       - name: Install gem
