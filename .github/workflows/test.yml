@@ -47,7 +47,7 @@ jobs:
     - name: Check logs
       run: nohup kubectl logs -lapp.kubernetes.io/managed-by=Helm -f &
     - name: helm upgrade install
-      run: helm upgrade --install nginx bitnami/nginx --wait --debug
+      run: helm upgrade --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP
       continue-on-error: true
     - name: kill background logs process
       run: kill -SIGHUP
@@ -56,7 +56,7 @@ jobs:
     - name: Check Events
       run: sleep 7 && kubectl get events --all-namespaces
     - name: Run from local
-      run: bash exe/helm_upgrade_logs --install nginx2 bitnami/nginx --wait --debug
+      run: bash exe/helm_upgrade_logs --install nginx2 bitnami/nginx --wait --debug --set service.type=ClusterIP
 #    - name: Helm upgrade with logs
 #      run: curl -s https://raw.githubusercontent.com/SamuelGarrattIqa/helm_upgrade_logs/main/exe/helm_upgrade_logs | bash -s -- --install nginx2 bitnami/nginx --wait
 
