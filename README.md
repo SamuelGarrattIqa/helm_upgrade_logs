@@ -23,7 +23,7 @@ Or install it yourself as:
 Still not working in a proper sense of a gem but the following kinda works if you want to install a release called `nginx` from the chart `bitnami/nginx`.
 
 ```
-curl -s https://gitlab.com/samuel-garratt/helm_upgrade_logs/-/raw/master/exe/helm_upgrade_logs | bash -s -- --install nginx bitnami/nginx
+curl -s https://gitlab.com/samuel-garratt/helm_upgrade_logs/-/raw/master/bin/helm_upgrade_logs.sh | bash -s -- --install nginx bitnami/nginx
 ```
 
 ## Development
