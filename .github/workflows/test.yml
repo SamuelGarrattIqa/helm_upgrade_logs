@@ -26,22 +26,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-#     - name: Set up Ruby
-#     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
-#     # change this to (see https://github.com/ruby/setup-ruby#versioning):
-#     # uses: ruby/setup-ruby@v1
-#       uses: ruby/setup-ruby@473e4d8fe5dd94ee328fdfca9f8c9c7afc9dae5e
-#       with:
-#         ruby-version: ${{ matrix.ruby-version }}
-#         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Test
+    - name: Start KIND cluster
       run: bash -f bin/start_kind.sh
     - name: Waiting for KIND cluster to get ready
       run: sleep 70
     - name: Add bitnami repo
       run: helm repo add bitnami https://charts.bitnami.com/bitnami
     - name: Install through gem exe
-      run: ./exe/helm_upgrade_logs --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP
+      run: ./exe/helm_upgrade_logs --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP --replicaCount=2
 #    - name: Check pods
 #      run: kubectl get pods --all-namespaces
 #    - name: Check Events

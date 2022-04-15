@@ -7,9 +7,11 @@ require 'helm_upgrade_logs'
 helm_pid = Process.spawn "helm upgrade #{ARGV.join(' ')}"
 
 event_pid = Process.spawn 'kubectl get events --watch-only=true'
+service_pid = Process.spawn 'kubectl get services --watch-only=true'
 sleep 5
-log_pid = Process.spawn 'kubectl logs -lapp.kubernetes.io/managed-by=Helm -f --all-containers --prefix --pod-running-timeout=20s'
+log_pid = Process.spawn 'kubectl logs -lapp.kubernetes.io/managed-by=Helm -f --all-containers --prefix --pod-running-timeout=20s --ignore-errors=true --max-log-requests=20'
 
 Process.wait helm_pid
 puts `kill #{log_pid}`
 puts `kill #{event_pid}`
+puts `kill #{service_pid}`
