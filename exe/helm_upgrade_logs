@@ -6,25 +6,10 @@ require 'helm_upgrade_logs'
 
 helm_pid = Process.spawn "helm upgrade #{ARGV.join(' ')}"
 
-
+event_pid = Process.spawn 'kubectl get events --watch-only=true'
 sleep 5
-log_pid = Process.spawn 'kubectl logs -lapp.kubernetes.io/managed-by=Helm -f --all-containers --prefix'
-event_pid = Process.spawn 'kubectl get events --watch=true'
+log_pid = Process.spawn 'kubectl logs -lapp.kubernetes.io/managed-by=Helm -f --all-containers --prefix --pod-running-timeout=20s'
 
 Process.wait helm_pid
 puts `kill #{log_pid}`
 puts `kill #{event_pid}`
-
-#3.times {
-#  sleep 5
-#  text = `helm status nginx | grep STATUS`
-#  if text.include?('deployed')
-#    puts 'Contains'
-#  else
-#    puts 'Nope'
-#  end
-#}
-#
-#puts 'Giving up'
-#`kill #{helm_pid}`
-#`kill #{lid}`
