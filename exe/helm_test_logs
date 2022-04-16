@@ -1,21 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'open3'
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), "..", "lib")
 require 'helm_upgrade_logs'
 
 $release_name = ARGV.find { |arg| !arg.start_with?('-') }
 
-helm_pid = Process.spawn "helm upgrade #{ARGV.join(' ')}"
+helm_pid = Process.spawn "helm test #{ARGV.join(' ')}"
 
-event_pid = Process.spawn 'kubectl get events --watch-only=true'
-service_pid = Process.spawn 'kubectl get services --watch-only=true'
-
-wait_for_pod_to_log
 log_pid = Process.spawn "kubectl logs -lapp.kubernetes.io/managed-by=Helm,app.kubernetes.io/instance=#{$release_name} -f --all-containers --prefix --ignore-errors=true --max-log-requests=20 --timestamps=true"
 
 Process.wait helm_pid
 puts `kill #{log_pid}`
-puts `kill #{event_pid}`
-puts `kill #{service_pid}`
