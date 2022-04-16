@@ -30,6 +30,8 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
       - name: Start KIND cluster
         run: bash -f bin/start_kind.sh
+      - name: Waiting for KIND cluster to get ready
+        run: sleep 70
       - name: Install gem
         run: gem install helm_upgrade_logs
       - name: Add bitnami repo
