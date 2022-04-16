@@ -18,10 +18,10 @@ def wait_for_pod
     sleep 1
     _, stderr, _ = Open3.capture3 "kubectl logs -lapp.kubernetes.io/managed-by=Helm"
     if stderr.empty?
-      puts "Waiting for pod logs: #{stderr}"
-    else
       puts 'Pods with logs found'
       break
+    else
+      puts "Waiting for pod logs: #{stderr}"
     end
   }
 end
