@@ -1,5 +1,5 @@
 ## [Unreleased]
 
-## [0.1.0] - 2022-04-14
+## [0.1.4] - 2022-04-16
 
-- Initial release
+- Wait for pods with logs to start before watching
