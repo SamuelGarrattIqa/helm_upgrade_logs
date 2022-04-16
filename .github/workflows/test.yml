@@ -53,5 +53,7 @@ jobs:
 #      run: sleep 70
     - name: Add bitnami repo
       run: helm repo add bitnami https://charts.bitnami.com/bitnami
-    - name: Install through gem exe
+    - name: Install bitnami
       run: ./exe/helm_upgrade_logs --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP --set replicaCount=2
+    - name: Install Redis
+      run: ./exe/helm_upgrade_logs --install redis bitnami/redis --set auth.enabled=false --version 14.0.2 --wait
