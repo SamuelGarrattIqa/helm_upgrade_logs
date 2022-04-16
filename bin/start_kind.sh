@@ -55,7 +55,7 @@ done
 
 # Assign Deafults
 CLUSTER_NAME=${CLUSTER_NAME:-"testcluster"} # NOT USING THIS. Does not provide benefit for 1 cluster on kind
-KIND_VERSION=${KIND_VERSION:-v0.11.0}
+KIND_VERSION=${KIND_VERSION:-v0.12.0}
 KUBECTL_VERSION=${KUBECTL_VERSION:-v1.20.4}
 HELM_VERSION=${HELM_VERSION:-v3.8.0}
 

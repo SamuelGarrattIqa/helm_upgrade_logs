@@ -1,15 +1,38 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'open3'
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), "..", "lib")
 require 'helm_upgrade_logs'
+
+# Approach not ideal as it will for all containers to be ready and want to stream logs before that
+def wait_for_container_ready
+  wait_pid = Process.spawn 'kubectl wait --for=condition=ContainersReady pod --selector "app.kubernetes.io/managed-by=Helm" --timeout=30s'
+  Process.wait wait_pid
+end
+
+# Wait for pods with logs to be present
+# Not ideal due to https://github.com/kubernetes/kubernetes/issues/28746
+def wait_for_pod
+  90.times {
+    sleep 1
+    _, stderr, _ = Open3.capture3 "kubectl logs -lapp.kubernetes.io/managed-by=Helm"
+    if stderr.start_with?('No resources found')
+      print 'Waiting for pod logs'
+    else
+      puts 'Pods with logs found'
+      break
+    end
+  }
+end
 
 helm_pid = Process.spawn "helm upgrade #{ARGV.join(' ')}"
 
 event_pid = Process.spawn 'kubectl get events --watch-only=true'
 service_pid = Process.spawn 'kubectl get services --watch-only=true'
-sleep 5
-log_pid = Process.spawn 'kubectl logs -lapp.kubernetes.io/managed-by=Helm -f --all-containers --prefix --pod-running-timeout=20s --ignore-errors=true --max-log-requests=20'
+
+wait_for_pod
+log_pid = Process.spawn 'kubectl logs -lapp.kubernetes.io/managed-by=Helm -f --all-containers --prefix --pod-running-timeout=20s --ignore-errors=true --max-log-requests=20 --timestamps=true'
 
 Process.wait helm_pid
 puts `kill #{log_pid}`

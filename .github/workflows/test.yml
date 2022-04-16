@@ -49,8 +49,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Start KIND cluster
       run: bash -f bin/start_kind.sh
-    - name: Waiting for KIND cluster to get ready
-      run: sleep 70
+#    - name: Waiting for KIND cluster to get ready
+#      run: sleep 70
     - name: Add bitnami repo
       run: helm repo add bitnami https://charts.bitnami.com/bitnami
     - name: Install through gem exe
