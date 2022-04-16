@@ -17,7 +17,7 @@ def wait_for_pod
   90.times {
     sleep 1
     stdout, stderr, _ = Open3.capture3 "kubectl logs -lapp.kubernetes.io/managed-by=Helm"
-    if stderr.empty? && !stdout.trim.empty?
+    if stderr.empty? && !stdout.strip.empty?
       puts 'Pods with logs found'
       break
     else
