@@ -13,7 +13,7 @@ event_pid = Process.spawn 'kubectl get events --watch-only=true'
 service_pid = Process.spawn 'kubectl get services --watch-only=true'
 
 wait_for_pod_to_log
-log_pid = Process.spawn "kubectl logs -lapp.kubernetes.io/managed-by=Helm,app.kubernetes.io/instance=#{$release_name} -f --all-containers --prefix --ignore-errors=true --max-log-requests=20 --timestamps=true"
+log_pid = Process.spawn "kubectl logs -lapp.kubernetes.io/managed-by=Helm,app.kubernetes.io/instance=#{$release_name} -f --all-containers --prefix --ignore-errors=true --max-log-requests=20 --timestamps=true --pod-running-timeout=300s"
 
 Process.wait helm_pid
 puts `kill #{log_pid}`

@@ -1,6 +1,7 @@
 ## [0.1.6] - 2022-04-17
 
 - Add `helm_test_logs` exe to check logs during `helm test`
+- Add `pod-running-timeout` of 300s to try and pick up logs that might take a while to appear
 
 ## [0.1.5] - 2022-04-16
 
