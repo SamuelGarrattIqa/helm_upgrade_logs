@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "open3"
+require 'English'
 require_relative "helm_upgrade_logs/version"
 
 ENV["helm_upgrade_logs_log_start"] ||= "90"

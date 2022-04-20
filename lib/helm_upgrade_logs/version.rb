@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
 module HelmUpgradeLogs
-  VERSION = "0.2.4"
+  # @return [String] Version of helm upgrade logs
+  VERSION = "0.2.5"
 end

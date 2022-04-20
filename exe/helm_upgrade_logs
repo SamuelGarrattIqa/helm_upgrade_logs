@@ -42,8 +42,10 @@ while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
   end
   sleep 1
 end
+helm_status = $CHILD_STATUS.exitstatus
 `kill #{event_pid}`
 `kill #{service_pid}`
 @pod_pids.each do |_pod, pid|
   `kill #{pid}`
 end
+exit helm_status

@@ -12,4 +12,6 @@ helm_pid = Process.spawn "helm test #{ARGV.join(" ")}"
 log_pid = Process.spawn(add_ns("kubectl logs -lapp.kubernetes.io/instance=#{@release_name} -f --all-containers --prefix --ignore-errors=true --max-log-requests=20 --timestamps=true --since=1s"))
 
 Process.wait helm_pid
+helm_status = $CHILD_STATUS.exitstatus
 `kill #{log_pid}`
+exit helm_status

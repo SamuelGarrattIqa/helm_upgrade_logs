@@ -1,4 +1,8 @@
-## [0.2.4]
+## [0.2.5] 2022-04-21
+
+- Return helm status code as script's status code
+
+## [0.2.4] 2022-04-21
 
 - Handle `n`, `--namespace` from helm command
 - Exit if there is failure on helm command while trying to get logs
