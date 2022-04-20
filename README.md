@@ -20,7 +20,9 @@ Or install it yourself as:
 
 ## Usage
 
-This gem is purely about an `exe` to wrap around `helm` commands and to log helpful commands.
+This gem is purely about an `exe` to wrap around `helm` commands and to log events and pod logs that happen as
+part of that release while it is being released. 
+
 Once installed, install/upgrade a helm chart with
 
 ```bash
@@ -29,16 +31,28 @@ helm_upgrade_logs --install redis bitnami/redis --set auth.enabled=false --versi
 
 After the `helm_upgrade_logs` command put any options that would normally add after `helm upgrade`.
 
+This library waits for logs to start in pods for 90 seconds or controlled by environment variable `helm_upgrade_logs_log_start`.
+After that it waits 35 seconds for logs to start in pods after the first one. 
+This is controlled by environment variable `helm_upgrade_logs_pod_start`
+
 To test a chart showing it logs, in a similar way run
 ```bash
 helm_test_logs redis
 ```
 
-This also has a bash script which can be used directly. E.g., to install `nginx` from the chart `bitnami/nginx`.
+### Aside bash script
+
+This also has a bash script which can be used directly although it will probably not work on CI
+and also does not close background processes so not ideal.
+
+However if you do want to try it, to install `nginx` from the chart `bitnami/nginx` run
 
 ```
 curl -s https://raw.githubusercontent.com/SamuelGarrattIqa/helm_upgrade_logs/main/bin/helm_upgrade_logs.sh | bash -s -- --install nginx bitnami/nginx
 ```
+
+## TODO
+* Make library handle `n`, `--namespace` from helm command
 
 ## Development
 

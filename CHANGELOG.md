@@ -1,3 +1,7 @@
+## [0.2.3] - 2022-04-20
+
+- Configuration on initial wait for pods logs and subsequent wait limits
+
 ## [0.2.2] - 2022-04-20
 
 - Wait for logs on each pod having a process for logging each pod
