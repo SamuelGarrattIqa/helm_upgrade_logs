@@ -1,3 +1,7 @@
+## [0.2.0] - 2022-04-20
+
+- Monitoring pods don't filter managed by helm as some pods don't have that with selectorLabels
+
 ## [0.1.7] - 2022-04-20
 
 - Monitor helm upgrade command and periodically reload getting logs when new pods appear
