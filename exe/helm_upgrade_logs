@@ -15,17 +15,28 @@ service_pid = Process.spawn 'kubectl get services --watch-only=true'
 wait_for_pod_to_log
 
 @pods = []
+@pod_pids = {}
 
 while Process.waitpid(helm_pid, Process::WNOHANG) == nil do
   pods = get_pods
   if pods != @pods
     @pods = pods
     puts "[INFO] Pods: #{pods.join(',')}"
-    puts `kill #{@log_pid}` if @log_pid
-    @log_pid = Process.spawn "kubectl logs -lapp.kubernetes.io/instance=#{$release_name} -f --all-containers --prefix --ignore-errors=true --max-log-requests=20 --timestamps=true --since=0s"
+    # Could change this each to Parallel.each
+    @pods.each do |pod|
+      if @pod_pids[pod].nil?
+        wait_for_specific_pod_to_log pod
+        log_pid = Process.spawn "kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true"
+        @pod_pids[pod] = log_pid
+      end
+    end
   end
-  sleep 2.5
+  sleep 1
 end
-puts `kill #{@log_pid}`
-puts `kill #{event_pid}`
-puts `kill #{service_pid}`
+`kill #{event_pid}`
+`kill #{service_pid}`
+@pod_pids.each do |pod, pid|
+  `kill #{pid}`
+end
+
+

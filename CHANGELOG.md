@@ -1,3 +1,7 @@
+## [0.2.2] - 2022-04-20
+
+- Wait for logs on each pod having a process for logging each pod
+
 ## [0.2.0] - 2022-04-20
 
 - Monitoring pods don't filter managed by helm as some pods don't have that with selectorLabels

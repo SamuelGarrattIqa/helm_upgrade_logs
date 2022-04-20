@@ -24,6 +24,19 @@ def wait_for_pod_to_log
   }
 end
 
+def wait_for_specific_pod_to_log(pod_name)
+  30.times {
+    sleep 1
+    stdout, stderr, _ = Open3.capture3 "kubectl logs #{pod_name}"
+    if stderr.empty? && !stdout.strip.empty?
+      puts "Pod #{pod_name} with logs found"
+      break
+    else
+      puts "Waiting for pod #{pod_name} logs: #{stderr}"
+    end
+  }
+end
+
 def get_pods
   stdout, stderr, _ = Open3.capture3 "kubectl get pods -lapp.kubernetes.io/instance=#{$release_name} -o name"
   if stderr.empty?
