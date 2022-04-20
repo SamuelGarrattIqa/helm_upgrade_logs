@@ -1,17 +1,17 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'open3'
+require "open3"
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), "..", "lib")
-require 'helm_upgrade_logs'
+require "helm_upgrade_logs"
 
-$release_name = ARGV.find { |arg| !arg.start_with?('-') }
-$namespace = namespace_from_args(ARGV)
+@release_name = ARGV.find { |arg| !arg.start_with?("-") }
+@namespace = namespace_from_args(ARGV)
 
-@helm_pid = Process.spawn "helm upgrade #{ARGV.join(' ')}"
+@helm_pid = Process.spawn "helm upgrade #{ARGV.join(" ")}"
 
-event_pid = Process.spawn(add_ns('kubectl get events --watch-only=true'))
-service_pid = Process.spawn(add_ns('kubectl get services --watch-only=true'))
+event_pid = Process.spawn(add_ns("kubectl get events --watch-only=true"))
+service_pid = Process.spawn(add_ns("kubectl get services --watch-only=true"))
 
 wait_for_pod_to_log
 
@@ -26,26 +26,24 @@ rescue Errno::ECHILD
   raise HelmUpgradeLogs::Error, "Failed to find logs before helm finished"
 end
 
-while Process.waitpid(@helm_pid, Process::WNOHANG) == nil do
-  pods = get_pods
+while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
+  pods = read_pods
   if pods != @pods
     @pods = pods
-    puts "[INFO] Pods: #{pods.join(',')}"
+    puts "[INFO] Pods: #{pods.join(",")}"
     # Could change this each to Parallel.each
     @pods.each do |pod|
-      if @pod_pids[pod].nil?
-        wait_for_specific_pod_to_log pod
-        log_pid = Process.spawn(add_ns("kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true"))
-        @pod_pids[pod] = log_pid
-      end
+      next unless @pod_pids[pod].nil?
+
+      wait_for_specific_pod_to_log pod
+      log_pid = Process.spawn(add_ns("kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true"))
+      @pod_pids[pod] = log_pid
     end
   end
   sleep 1
 end
 `kill #{event_pid}`
 `kill #{service_pid}`
-@pod_pids.each do |pod, pid|
+@pod_pids.each do |_pod, pid|
   `kill #{pid}`
 end
-
-
