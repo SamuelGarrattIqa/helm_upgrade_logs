@@ -24,6 +24,15 @@ def wait_for_pod_to_log
   }
 end
 
+def get_pods
+  stdout, stderr, _ = Open3.capture3 "kubectl get pods -lapp.kubernetes.io/managed-by=Helm,app.kubernetes.io/instance=#{$release_name} -o name"
+  if stderr.empty?
+    stdout.lines.collect { |pod| pod.strip }
+  else
+    []
+  end
+end
+
 module HelmUpgradeLogs
   class Error < StandardError; end
   # Your code goes here...

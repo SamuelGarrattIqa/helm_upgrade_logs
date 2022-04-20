@@ -1,3 +1,7 @@
+## [0.2.0] - 2022-04-20
+
+- Monitor helm upgrade command and periodically reload getting logs when new pods appear
+
 ## [0.1.6] - 2022-04-17
 
 - Add `helm_test_logs` exe to check logs during `helm test`

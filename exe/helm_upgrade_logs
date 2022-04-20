@@ -13,9 +13,19 @@ event_pid = Process.spawn 'kubectl get events --watch-only=true'
 service_pid = Process.spawn 'kubectl get services --watch-only=true'
 
 wait_for_pod_to_log
-log_pid = Process.spawn "kubectl logs -lapp.kubernetes.io/managed-by=Helm,app.kubernetes.io/instance=#{$release_name} -f --all-containers --prefix --ignore-errors=true --max-log-requests=20 --timestamps=true --pod-running-timeout=300s"
 
-Process.wait helm_pid
-puts `kill #{log_pid}`
+@pods = []
+
+while Process.waitpid(helm_pid, Process::WNOHANG) == nil do
+  pods = get_pods
+  if pods != @pods
+    @pods = pods
+    puts "[INFO] Pods: #{pods.join(',')}"
+    puts `kill #{@log_pid}` if @log_pid
+    @log_pid = Process.spawn "kubectl logs -lapp.kubernetes.io/managed-by=Helm,app.kubernetes.io/instance=#{$release_name} -f --all-containers --prefix --ignore-errors=true --max-log-requests=20 --timestamps=true --since=0s"
+  end
+  sleep 2.5
+end
+puts `kill #{@log_pid}`
 puts `kill #{event_pid}`
 puts `kill #{service_pid}`
