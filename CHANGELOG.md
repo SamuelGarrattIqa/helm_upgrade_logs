@@ -1,4 +1,4 @@
-## [0.2.0] - 2022-04-20
+## [0.1.7] - 2022-04-20
 
 - Monitor helm upgrade command and periodically reload getting logs when new pods appear
 
