@@ -8,7 +8,7 @@ $release_name = ARGV.find { |arg| !arg.start_with?('-') }
 
 helm_pid = Process.spawn "helm test #{ARGV.join(' ')}"
 
-log_pid = Process.spawn "kubectl logs -lapp.kubernetes.io/managed-by=Helm,app.kubernetes.io/instance=#{$release_name} -f --all-containers --prefix --ignore-errors=true --max-log-requests=20 --timestamps=true"
+log_pid = Process.spawn "kubectl logs -lapp.kubernetes.io/instance=#{$release_name} -f --all-containers --prefix --ignore-errors=true --max-log-requests=20 --timestamps=true"
 
 Process.wait helm_pid
-puts `kill #{log_pid}`
+`kill #{log_pid}`

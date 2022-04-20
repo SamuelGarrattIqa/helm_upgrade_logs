@@ -30,14 +30,27 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
       - name: Start KIND cluster
         run: bash -f bin/start_kind.sh
-      - name: Waiting for KIND cluster to get ready
-        run: sleep 70
       - name: Install gem
         run: gem install helm_upgrade_logs
       - name: Add bitnami repo
         run: helm repo add bitnami https://charts.bitnami.com/bitnami
       - name: Helm install debugging logs
         run: helm_upgrade_logs --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP
+
+  unit_test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: ['3.0']
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+      - name: Run tests
+        run: bundle exec rake
 
   test_exe:
     runs-on: ubuntu-latest
@@ -49,11 +62,11 @@ jobs:
     - uses: actions/checkout@v3
     - name: Start KIND cluster
       run: bash -f bin/start_kind.sh
-#    - name: Waiting for KIND cluster to get ready
-#      run: sleep 70
     - name: Add bitnami repo
       run: helm repo add bitnami https://charts.bitnami.com/bitnami
     - name: Install bitnami
       run: ./exe/helm_upgrade_logs --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP --set replicaCount=2
+    - name: Test bitnami
+      run: ./exe/helm_test_logs nginx
     - name: Install Redis
       run: ./exe/helm_upgrade_logs --install redis bitnami/redis --set auth.enabled=false --version 14.0.2 --wait

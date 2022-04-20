@@ -6,18 +6,27 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), "..", "lib")
 require 'helm_upgrade_logs'
 
 $release_name = ARGV.find { |arg| !arg.start_with?('-') }
+$namespace = namespace_from_args(ARGV)
 
-helm_pid = Process.spawn "helm upgrade #{ARGV.join(' ')}"
+@helm_pid = Process.spawn "helm upgrade #{ARGV.join(' ')}"
 
-event_pid = Process.spawn 'kubectl get events --watch-only=true'
-service_pid = Process.spawn 'kubectl get services --watch-only=true'
+event_pid = Process.spawn(add_ns('kubectl get events --watch-only=true'))
+service_pid = Process.spawn(add_ns('kubectl get services --watch-only=true'))
 
 wait_for_pod_to_log
 
 @pods = []
 @pod_pids = {}
 
-while Process.waitpid(helm_pid, Process::WNOHANG) == nil do
+begin
+  Process.waitpid(@helm_pid, Process::WNOHANG)
+rescue Errno::ECHILD
+  `kill #{event_pid}`
+  `kill #{service_pid}`
+  raise HelmUpgradeLogs::Error, "Failed to find logs before helm finished"
+end
+
+while Process.waitpid(@helm_pid, Process::WNOHANG) == nil do
   pods = get_pods
   if pods != @pods
     @pods = pods
@@ -26,7 +35,7 @@ while Process.waitpid(helm_pid, Process::WNOHANG) == nil do
     @pods.each do |pod|
       if @pod_pids[pod].nil?
         wait_for_specific_pod_to_log pod
-        log_pid = Process.spawn "kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true"
+        log_pid = Process.spawn(add_ns("kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true"))
         @pod_pids[pod] = log_pid
       end
     end

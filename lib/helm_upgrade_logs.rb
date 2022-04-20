@@ -12,12 +12,13 @@ def wait_for_container_ready
   Process.wait wait_pid
 end
 
-# Wait for pods with logs to be present
+# Wait for very first pods with logs to be present
 # Not ideal due to https://github.com/kubernetes/kubernetes/issues/28746
 def wait_for_pod_to_log
   ENV['helm_upgrade_logs_log_start'].to_i.times do |i|
+    return if Process.waitpid(@helm_pid, Process::WNOHANG) != nil
     sleep 1
-    stdout, stderr, _ = Open3.capture3 "kubectl logs -lapp.kubernetes.io/instance=#{$release_name}"
+    stdout, stderr, _ = Open3.capture3(add_ns("kubectl logs -lapp.kubernetes.io/instance=#{$release_name}"))
     if stderr.empty? && !stdout.strip.empty?
       puts '[INFO] Pods with logs found'
       break
@@ -27,10 +28,11 @@ def wait_for_pod_to_log
   end
 end
 
+# Wait for logs from a specific pod
 def wait_for_specific_pod_to_log(pod_name)
   ENV['helm_upgrade_logs_pod_start'].to_i.times do |i|
     sleep 1
-    stdout, stderr, _ = Open3.capture3 "kubectl logs #{pod_name}"
+    stdout, stderr, _ = Open3.capture3(add_ns("kubectl logs #{pod_name}"))
     if stderr.empty? && !stdout.strip.empty?
       puts "[INFO] Pod #{pod_name} with logs found"
       break
@@ -40,13 +42,28 @@ def wait_for_specific_pod_to_log(pod_name)
   end
 end
 
+# Get pods
 def get_pods
-  stdout, stderr, _ = Open3.capture3 "kubectl get pods -lapp.kubernetes.io/instance=#{$release_name} -o name"
+  stdout, stderr, _ = Open3.capture3(add_ns("kubectl get pods -lapp.kubernetes.io/instance=#{$release_name} -o name"))
   if stderr.empty?
     stdout.lines.collect { |pod| pod.strip }
   else
     []
   end
+end
+
+# @param [Array] args
+def namespace_from_args(args)
+  match_index = args.find_index { |arg| %w[-n --namespace].include?(arg) }
+  return nil unless match_index
+
+  args[match_index + 1]
+end
+
+# Add namespace to kube query
+def add_ns(kube_query)
+  kube_query += " -n #{$namespace}" if $namespace
+  kube_query
 end
 
 module HelmUpgradeLogs

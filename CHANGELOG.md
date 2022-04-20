@@ -1,3 +1,8 @@
+## [0.2.4]
+
+- Handle `n`, `--namespace` from helm command
+- Exit if there is failure on helm command while trying to get logs
+
 ## [0.2.3] - 2022-04-20
 
 - Configuration on initial wait for pods logs and subsequent wait limits
