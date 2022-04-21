@@ -10,6 +10,9 @@ require "helm_upgrade_logs"
 
 @helm_pid = Process.spawn "helm upgrade #{ARGV.join(" ")}"
 
+pods_before_upgrade = read_pods
+puts "[INFO] Pods before upgrade #{pods_before_upgrade}" if pods_before_upgrade.size.positive?
+
 event_pid = Process.spawn(add_ns("kubectl get events --watch-only=true"))
 service_pid = Process.spawn(add_ns("kubectl get services --watch-only=true"))
 
@@ -27,7 +30,7 @@ rescue Errno::ECHILD
 end
 
 while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
-  pods = read_pods
+  pods = read_pods - pods_before_upgrade
   if pods != @pods
     @pods = pods
     puts "[INFO] Pods: #{pods.join(",")}"

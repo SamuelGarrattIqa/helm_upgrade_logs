@@ -1,3 +1,7 @@
+## [0.2.6]
+
+-- Don't log pods existing before an upgrade
+
 ## [0.2.5] 2022-04-21
 
 - Return helm status code as script's status code
