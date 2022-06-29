@@ -5,6 +5,7 @@ require "open3"
 require "fileutils"
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), "..", "lib")
 require "helm_upgrade_logs"
+UPGRADE_LOG_FOLDER = "helm_upgrade_logs"
 
 @release_name = ARGV.find { |arg| !arg.start_with?("-") }
 @namespace = namespace_from_args(ARGV)
@@ -30,7 +31,7 @@ rescue Errno::ECHILD
   raise HelmUpgradeLogs::Error, "Failed to find logs before helm finished"
 end
 
-FileUtils.mkdir_p "helm_upgrade_logs"
+FileUtils.mkdir_p UPGRADE_LOG_FOLDER
 
 while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
   pods = read_pods - pods_before_upgrade
@@ -47,7 +48,7 @@ while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
       )
       logfile_pid = Process.spawn(
         add_ns("kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true"),
-        out: "helm_upgrade_logs/#{pod.gsub("/", "_")}.log"
+        out: "#{UPGRADE_LOG_FOLDER}/#{pod.gsub("/", "_")}.log"
       )
       @pod_pids["#{pod}_stdout"] = std_out_pid
       @pod_pids["#{pod}_fileout"] = logfile_pid
@@ -65,7 +66,8 @@ puts @pod_pids if ENV["helm_upgrade_logs_debug"] == "true"
 end
 
 if ENV["helm_upgrade_logs_error_msg"]
-  pod_logs_files = Dir.glob("helm_logs/*.log")
+  pod_logs_files = Dir.glob("#{UPGRADE_LOG_FOLDER}/*.log")
+  puts "Reading logs from #{pod_logs_files.count} pod logs" if ENV["helm_upgrade_logs_debug"] == "true"
   pod_logs_files.each do |log_file|
     lines = File.readlines log_file
     lines.each_with_index do |line, index|

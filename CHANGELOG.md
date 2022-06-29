@@ -1,3 +1,7 @@
+## [0.3.1]
+
+- Fix LOG folder parsed to check error message
+
 ## [0.3.0]
 
 - Log output to a file in a folder `helm_upgrade_logs` as well as STDOUT
