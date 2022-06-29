@@ -74,8 +74,11 @@ if ENV["helm_upgrade_logs_error_msg"]
       next unless line.include?(ENV["helm_upgrade_logs_error_msg"])
 
       msg = "Helm install error: #{line} from #{log_file} (Line #{index + 1})"
-      puts "[ERROR] #{msg}"
-      puts "##vso[task.logissue type=error] #{msg}" if ENV["helm_upgrade_logs_ado_error"] == "true"
+      if ENV["helm_upgrade_logs_ado_error"] == "true"
+        puts "##vso[task.logissue type=error] #{msg}"
+      else
+        puts "[ERROR] #{msg}"
+      end
     end
   end
 end

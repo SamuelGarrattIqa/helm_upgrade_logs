@@ -1,3 +1,7 @@
+## [0.3.2]
+
+- ADO error and normal error don't need to both be displayed
+
 ## [0.3.1]
 
 - Fix LOG folder parsed to check error message
