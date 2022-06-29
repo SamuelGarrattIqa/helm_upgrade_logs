@@ -71,4 +71,4 @@ jobs:
     - name: Test bitnami
       run: ./exe/helm_test_logs nginx
     - name: Install Redis
-      run: ./exe/helm_upgrade_logs --install redis bitnami/redis --set auth.enabled=false --version 14.0.2 --wait
+      run: ./exe/helm_upgrade_logs --install redis bitnami/redis --set auth.enabled=false --version 15.7.2 --set replica.replicaCount=1 --wait
