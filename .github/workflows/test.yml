@@ -60,6 +60,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Use Debug
+      run: export helm_upgrade_logs_debug=true
     - name: Start KIND cluster
       run: bash -f bin/start_kind.sh
     - name: Add bitnami repo

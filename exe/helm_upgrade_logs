@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "open3"
+require "fileutils"
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), "..", "lib")
 require "helm_upgrade_logs"
 
@@ -29,6 +30,8 @@ rescue Errno::ECHILD
   raise HelmUpgradeLogs::Error, "Failed to find logs before helm finished"
 end
 
+FileUtils.mkdir_p "helm_upgrade_logs"
+
 while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
   pods = read_pods - pods_before_upgrade
   if pods != @pods
@@ -39,8 +42,15 @@ while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
       next unless @pod_pids[pod].nil?
 
       wait_for_specific_pod_to_log pod
-      log_pid = Process.spawn(add_ns("kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true"))
-      @pod_pids[pod] = log_pid
+      std_out_pid = Process.spawn(
+        add_ns("kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true")
+      )
+      logfile_pid = Process.spawn(
+        add_ns("kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true"),
+        out: "helm_upgrade_logs/#{pod.gsub("/", "_")}.log"
+      )
+      @pod_pids["#{pod}_stdout"] = std_out_pid
+      @pod_pids["#{pod}_fileout"] = logfile_pid
     end
   end
   sleep 1
@@ -48,7 +58,23 @@ end
 helm_status = $CHILD_STATUS.exitstatus
 `kill #{event_pid}`
 `kill #{service_pid}`
+puts @pod_pids if ENV["helm_upgrade_logs_debug"] == "true"
 @pod_pids.each do |_pod, pid|
+  puts "Terminating #{_pod} #{pid}" if ENV["helm_upgrade_logs_debug"] == "true"
   `kill #{pid}`
+end
+
+if ENV["helm_upgrade_logs_error_msg"]
+  pod_logs_files = Dir.glob("helm_logs/*.log")
+  pod_logs_files.each do |log_file|
+    lines = File.readlines log_file
+    lines.each_with_index do |line, index|
+      next unless line.include?(ENV["helm_upgrade_logs_error_msg"])
+
+      msg = "Helm install error: #{line} from #{log_file} (Line #{index + 1})"
+      puts "[ERROR] #{msg}"
+      puts "##vso[task.logissue type=error] #{msg}" if ENV["helm_upgrade_logs_ado_error"] == "true"
+    end
+  end
 end
 exit helm_status

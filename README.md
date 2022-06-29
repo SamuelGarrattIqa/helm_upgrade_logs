@@ -2,6 +2,8 @@
 
 Idea is to show logs of pods and events while doing a kubernetes helm install or upgrade.
 
+> This has only been tested on linux. More more would be needed to run script properly on Windows
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -34,6 +36,11 @@ After the `helm_upgrade_logs` command put any options that would normally add af
 This library waits for logs to start in pods for 90 seconds or controlled by environment variable `helm_upgrade_logs_log_start`.
 After that it waits 35 seconds for logs to start in pods after the first one. 
 This is controlled by environment variable `helm_upgrade_logs_pod_start`
+
+Logs are pushed to STDOUT and also to files in a folder `helm_upgrade_logs`. 
+The ENV variable `helm_upgrade_logs_error_msg` can be set to throw an error at the end for a certain string
+contained in the logs like `ERROR`. The `helm_upgrade_logs_ado_error` can be set to raise a signal to Azure
+Dev Ops to throw an error in the build.
 
 To test a chart showing it logs, in a similar way run
 ```bash

@@ -1,6 +1,12 @@
+## [0.3.0]
+
+- Log output to a file in a folder `helm_upgrade_logs` as well as STDOUT
+- If `helm_upgrade_logs_error_msg` is set then rethrow error after install finished. For AzureDevOps, setting
+`helm_upgrade_logs_ado_error` to `true` will raise an error in the build
+
 ## [0.2.6]
 
--- Don't log pods existing before an upgrade
+- Don't log pods existing before an upgrade
 
 ## [0.2.5] 2022-04-21
 

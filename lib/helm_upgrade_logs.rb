@@ -68,6 +68,13 @@ def add_ns(kube_query)
   kube_query
 end
 
+# Add namespace to kube query
+def add_ns_file(kube_query, pod)
+  kube_query += " -n #{@namespace}" if @namespace
+  kube_query += "> #{pod}.log"
+  kube_query
+end
+
 module HelmUpgradeLogs
   class Error < StandardError; end
   # Your code goes here...
