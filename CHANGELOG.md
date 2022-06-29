@@ -1,3 +1,7 @@
+## [0.3.3]
+
+- Run force kill on processes to ensure they stop
+
 ## [0.3.2]
 
 - ADO error and normal error don't need to both be displayed

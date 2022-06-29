@@ -26,8 +26,8 @@ wait_for_pod_to_log
 begin
   Process.waitpid(@helm_pid, Process::WNOHANG)
 rescue Errno::ECHILD
-  `kill #{event_pid}`
-  `kill #{service_pid}`
+  Process.kill("KILL", event_pid)
+  Process.kill("KILL", service_pid)
   raise HelmUpgradeLogs::Error, "Failed to find logs before helm finished"
 end
 
@@ -56,13 +56,14 @@ while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
   end
   sleep 1
 end
+puts "[INFO] Cleaning up loggers after helm upgrade"
 helm_status = $CHILD_STATUS.exitstatus
-`kill #{event_pid}`
-`kill #{service_pid}`
+Process.kill("KILL", event_pid)
+Process.kill("KILL", service_pid)
 puts @pod_pids if ENV["helm_upgrade_logs_debug"] == "true"
 @pod_pids.each do |_pod, pid|
   puts "Terminating #{_pod} #{pid}" if ENV["helm_upgrade_logs_debug"] == "true"
-  `kill #{pid}`
+  Process.kill("KILL", pid)
 end
 
 if ENV["helm_upgrade_logs_error_msg"]
