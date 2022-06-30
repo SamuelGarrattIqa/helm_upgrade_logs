@@ -46,7 +46,7 @@ while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
       std_out_pid = Process.spawn(
         add_ns("kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true")
       )
-      @pod_pids["#{pod}_stdout"] = std_out_pid
+      @pod_pids[pod] = std_out_pid
       next unless ENV["helm_upgrade_logs_error_msg"]
 
       logfile_pid = Process.spawn(
