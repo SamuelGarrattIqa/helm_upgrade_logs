@@ -31,7 +31,7 @@ rescue Errno::ECHILD
   raise HelmUpgradeLogs::Error, "Failed to find logs before helm finished"
 end
 
-FileUtils.mkdir_p UPGRADE_LOG_FOLDER
+FileUtils.mkdir_p(UPGRADE_LOG_FOLDER) if ENV["helm_upgrade_logs_error_msg"]
 
 while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
   pods = read_pods - pods_before_upgrade
@@ -46,11 +46,13 @@ while Process.waitpid(@helm_pid, Process::WNOHANG).nil?
       std_out_pid = Process.spawn(
         add_ns("kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true")
       )
+      @pod_pids["#{pod}_stdout"] = std_out_pid
+      next unless ENV["helm_upgrade_logs_error_msg"]
+
       logfile_pid = Process.spawn(
         add_ns("kubectl logs #{pod} -f --all-containers --prefix --ignore-errors=true --timestamps=true"),
         out: "#{UPGRADE_LOG_FOLDER}/#{pod.gsub("/", "_")}.log"
       )
-      @pod_pids["#{pod}_stdout"] = std_out_pid
       @pod_pids["#{pod}_fileout"] = logfile_pid
     end
   end
@@ -59,12 +61,20 @@ end
 puts "[INFO] Cleaning up loggers after helm upgrade"
 helm_status = $CHILD_STATUS.exitstatus
 Process.kill("KILL", event_pid)
+Process.wait event_pid
 Process.kill("KILL", service_pid)
-puts @pod_pids if ENV["helm_upgrade_logs_debug"] == "true"
+Process.wait service_pid
+
+if ENV["helm_upgrade_logs_debug"] == "true"
+  puts "[INFO] Log processes"
+  puts @pod_pids
+end
 @pod_pids.each do |_pod, pid|
   puts "Terminating #{_pod} #{pid}" if ENV["helm_upgrade_logs_debug"] == "true"
   Process.kill("KILL", pid)
+  Process.wait pid
 end
+puts `ps` if ENV["helm_upgrade_logs_debug"] == "true"
 
 if ENV["helm_upgrade_logs_error_msg"]
   pod_logs_files = Dir.glob("#{UPGRADE_LOG_FOLDER}/*.log")

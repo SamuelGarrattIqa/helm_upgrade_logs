@@ -1,3 +1,7 @@
+## [0.3.4]
+
+- Only log to folder if `helm_upgrade_logs_error_msg` env variable set
+
 ## [0.3.3]
 
 - Run force kill on processes to ensure they stop
