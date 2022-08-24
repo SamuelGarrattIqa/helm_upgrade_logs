@@ -2,5 +2,5 @@
 
 module HelmUpgradeLogs
   # @return [String] Version of helm upgrade logs
-  VERSION = "0.3.5"
+  VERSION = "0.3.6"
 end

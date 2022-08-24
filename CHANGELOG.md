@@ -1,3 +1,7 @@
+## [0.3.6]
+
+- Handle parsing multiple error messages in `helm_upgrade_logs_error_msg` that are comma separated
+
 ## [0.3.5]
 
 - Fix error where multiple processes being spawned to log the same pod

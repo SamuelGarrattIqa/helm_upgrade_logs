@@ -79,10 +79,11 @@ puts `ps` if ENV["helm_upgrade_logs_debug"] == "true"
 if ENV["helm_upgrade_logs_error_msg"]
   pod_logs_files = Dir.glob("#{UPGRADE_LOG_FOLDER}/*.log")
   puts "Reading logs from #{pod_logs_files.count} pod logs" if ENV["helm_upgrade_logs_debug"] == "true"
+  error_messages = ENV["helm_upgrade_logs_error_msg"].split(",")
   pod_logs_files.each do |log_file|
     lines = File.readlines log_file
     lines.each_with_index do |line, index|
-      next unless line.include?(ENV["helm_upgrade_logs_error_msg"])
+      next unless error_messages.any? { |error| line.include? error  }
 
       msg = "Helm install error: #{line} from #{log_file} (Line #{index + 1})"
       if ENV["helm_upgrade_logs_ado_error"] == "true"
