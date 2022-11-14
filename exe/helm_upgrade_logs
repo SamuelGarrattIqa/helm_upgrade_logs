@@ -7,7 +7,7 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), "..", "lib")
 require "helm_upgrade_logs"
 UPGRADE_LOG_FOLDER = "helm_upgrade_logs"
 
-@release_name = ARGV.find { |arg| !arg.start_with?("-") }
+@release_name = release_name_from_args(ARGV)
 @namespace = namespace_from_args(ARGV)
 
 @helm_pid = Process.spawn "helm upgrade #{ARGV.join(" ")}"

@@ -62,6 +62,32 @@ def namespace_from_args(args)
   args[match_index + 1]
 end
 
+def options_with_args
+  %w[--set --ca-file --cert-file --description --history-max --key-file --keyring --output --password --post-renderer
+     --repo --set --set-file --set-string --timeout --username --values --version --kube-apiserver --kube-as-group
+     --kube-as-user --kube-as-file --kube-context --kube-token --kubeconfig --namespace --registry-config
+     --repository-cache --repository-config -n -f -o]
+end  
+
+# @return Release name from command line arguments
+def release_name_from_args(args)
+  arg_list = args.clone
+  
+  loop do
+    option_with_val = false
+    arg_list.each_with_index do |arg, index|
+      if options_with_args.include?(arg_list[index - 1])
+        arg_list.delete_at(index - 1)
+        arg_list.delete_at(index - 1)
+        option_with_val = true
+        break
+      end
+    end
+    break if option_with_val == false
+  end
+  arg_list.find { |arg| !arg.start_with?("-") }
+end
+
 # Add namespace to kube query
 def add_ns(kube_query)
   kube_query += " -n #{@namespace}" if @namespace
@@ -77,5 +103,4 @@ end
 
 module HelmUpgradeLogs
   class Error < StandardError; end
-  # Your code goes here...
 end

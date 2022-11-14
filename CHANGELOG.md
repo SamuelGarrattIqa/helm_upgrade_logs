@@ -1,3 +1,7 @@
+## [0.4.0]
+
+- Change to handle params before release name fixing #1
+
 ## [0.3.6]
 
 - Handle parsing multiple error messages in `helm_upgrade_logs_error_msg` that are comma separated
