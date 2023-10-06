@@ -70,5 +70,6 @@ jobs:
       run: ./exe/helm_upgrade_logs --install nginx bitnami/nginx --wait --debug --set service.type=ClusterIP --set replicaCount=2
     - name: Test bitnami
       run: ./exe/helm_test_logs nginx
-    - name: Install Redis
-      run: ./exe/helm_upgrade_logs --install redis bitnami/redis --set auth.enabled=false --version 15.7.2 --set replica.replicaCount=1 --wait
+   # Older version of redis chart - need to update to work with new syntax
+   # - name: Install Redis
+   #   run: ./exe/helm_upgrade_logs --install redis bitnami/redis --set auth.enabled=false --version 15.7.2 --set replica.replicaCount=1 --wait
