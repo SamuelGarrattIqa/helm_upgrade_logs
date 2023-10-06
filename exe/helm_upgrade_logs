@@ -28,7 +28,7 @@ begin
 rescue Errno::ECHILD
   Process.kill("KILL", event_pid)
   Process.kill("KILL", service_pid)
-  raise HelmUpgradeLogs::Error, "Failed to find logs before helm finished"
+  raise HelmUpgradeLogs::Error, "Failed to find logs before helm finished" unless ENV["helm_upgrade_logs_ignore_child_error"]
 end
 
 FileUtils.mkdir_p(UPGRADE_LOG_FOLDER) if ENV["helm_upgrade_logs_error_msg"]

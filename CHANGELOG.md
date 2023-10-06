@@ -1,3 +1,7 @@
+## [0.4.1]
+
+- Ignore error if new environment variable `helm_upgrade_logs_ignore_child_error` is passed
+
 ## [0.4.0]
 
 - Change to handle params before release name fixing #1
