@@ -20,7 +20,7 @@ def wait_for_pod_to_log
     break unless Process.waitpid(@helm_pid, Process::WNOHANG).nil?
 
     sleep 1
-    stdout, stderr, = Open3.capture3(add_ns("kubectl logs -lapp.kubernetes.io/instance=#{@release_name} --selector 'status.phase!=Failed'"))
+    stdout, stderr, = Open3.capture3(add_ns("kubectl logs -lapp.kubernetes.io/instance=#{@release_name}"))
     if stderr.empty? && !stdout.strip.empty?
       puts "[INFO] Pods with logs found"
       break
