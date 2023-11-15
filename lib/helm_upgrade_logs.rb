@@ -4,7 +4,7 @@ require "open3"
 require 'English'
 require_relative "helm_upgrade_logs/version"
 
-ENV["helm_upgrade_logs_log_start"] ||= "90"
+ENV["helm_upgrade_logs_log_start"] ||= "1"
 ENV["helm_upgrade_logs_pod_start"] ||= "35"
 
 # Approach not ideal as it will for all containers to be ready and want to stream logs before that
@@ -46,7 +46,7 @@ end
 
 # Get pods
 def read_pods
-  stdout, stderr, = Open3.capture3(add_ns("kubectl get pods -lapp.kubernetes.io/instance=#{@release_name} -o name"))
+  stdout, stderr, = Open3.capture3(add_ns("kubectl get pods -lapp.kubernetes.io/instance=#{@release_name} --field-selector 'status.phase!=Failed' -o name"))
   if stderr.empty?
     stdout.lines.collect(&:strip)
   else
@@ -67,12 +67,12 @@ def options_with_args
      --repo --set --set-file --set-string --timeout --username --values --version --kube-apiserver --kube-as-group
      --kube-as-user --kube-as-file --kube-context --kube-token --kubeconfig --namespace --registry-config
      --repository-cache --repository-config -n -f -o]
-end  
+end
 
 # @return Release name from command line arguments
 def release_name_from_args(args)
   arg_list = args.clone
-  
+
   loop do
     option_with_val = false
     arg_list.each_with_index do |arg, index|

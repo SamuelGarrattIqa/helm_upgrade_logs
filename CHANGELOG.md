@@ -1,3 +1,8 @@
+## [0.5.0]
+
+- Wait for any pod log only for a second (old behaviour can be reverted if `helm_upgrade_logs_log_start` ENV var is set) then use
+  specific pod logs filtered by non failed status to filter. Fixing #4 and perhaps #2 
+
 ## [0.4.1]
 
 - Ignore error if new environment variable `helm_upgrade_logs_ignore_child_error` is passed
