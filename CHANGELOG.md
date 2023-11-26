@@ -1,3 +1,7 @@
+## [0.5.1]
+
+- Fix `helm_test_logs` killing of child process which fails with error on Windows
+
 ## [0.5.0]
 
 - Wait for any pod log only for a second (old behaviour can be reverted if `helm_upgrade_logs_log_start` ENV var is set) then use
